@@ -1,0 +1,122 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ room.name }} - Chat App{% endblock %}
+
+{% block body %}
+    <div class="chat-container">
+        <div class="chat-header">
+            <h2>{{ room.name }}</h2>
+        </div>
+
+        <div class="chat-messages" id="messages">
+            {% if messages is empty %}
+                <div class="empty-chat">
+                    <p>Aucun message pour l'instant.</p>
+                    <p>Soyez le premier à écrire !</p>
+                </div>
+            {% else %}
+                {% for message in messages %}
+                    <div class="message {{ message.authorName == username ? 'message-own' : 'message-other' }}">
+                        <div class="message-author">{{ message.authorName }}</div>
+                        <div>{{ message.content }}</div>
+                        <div class="message-time">{{ message.createdAt|date('H:i') }}</div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+
+        <div class="chat-input">
+            <form method="POST" action="{{ path('app_room_message', {slug: room.slug}) }}"
+                  data-turbo="true" data-turbo-action="replace">
+                <input type="text" name="content" id="message-content"
+                       placeholder="Écrivez votre message..." required autofocus
+                       autocomplete="off">
+                <button type="submit" class="btn">Envoyer</button>
+            </form>
+        </div>
+    </div>
+
+    {# Mercure subscription for real-time updates #}
+    <turbo-stream-source src="{{ mercure(mercure_topic) }}"></turbo-stream-source>
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        // Current user username for comparison
+        const currentUsername = '{{ username }}';
+        
+        // Auto-scroll to bottom of messages
+        function scrollToBottom() {
+            const messagesContainer = document.getElementById('messages');
+            if (messagesContainer) {
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            }
+        }
+        
+        // Apply correct styling to messages from Mercure
+        function styleMessages() {
+            const messages = document.querySelectorAll('.message-mercure');
+            messages.forEach(function(msg) {
+                const author = msg.getAttribute('data-author');
+                if (author === currentUsername) {
+                    msg.classList.remove('message-other', 'message-mercure');
+                    msg.classList.add('message-own');
+                } else {
+                    msg.classList.remove('message-own', 'message-mercure');
+                    msg.classList.add('message-other');
+                }
+            });
+        }
+        
+        // Handle new messages
+        function handleNewMessages() {
+            requestAnimationFrame(function() {
+                styleMessages();
+                scrollToBottom();
+            });
+        }
+        
+        // Initial scroll on page load
+        scrollToBottom();
+        styleMessages();
+        
+        // Listen for DOM changes (Mercure messages via turbo-stream)
+        document.addEventListener('turbo:before-stream-render', function(event) {
+            // Wait for the stream to be rendered
+            setTimeout(function() {
+                styleMessages();
+                scrollToBottom();
+            }, 50);
+        });
+        
+        // Also listen for standard DOM mutations
+        const messagesContainer = document.getElementById('messages');
+        if (messagesContainer) {
+            const observer = new MutationObserver(function(mutations) {
+                let hasNewNodes = false;
+                for (const mutation of mutations) {
+                    if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
+                        hasNewNodes = true;
+                        break;
+                    }
+                }
+                if (hasNewNodes) {
+                    handleNewMessages();
+                }
+            });
+            observer.observe(messagesContainer, { childList: true, subtree: true });
+        }
+        
+        // Listen for Turbo events
+        document.addEventListener('turbo:load', scrollToBottom);
+        document.addEventListener('turbo:submit-end', scrollToBottom);
+
+        // Focus input on load
+        setTimeout(function() {
+            const messageInput = document.getElementById('message-content');
+            if (messageInput) {
+                messageInput.focus();
+            }
+        }, 100);
+    </script>
+{% endblock %}

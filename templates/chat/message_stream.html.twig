@@ -1,0 +1,9 @@
+<turbo-stream action="append" target="messages">
+    <template>
+        <div class="message message-mercure" data-author="{{ message.authorName }}">
+            <div class="message-author">{{ message.authorName }}</div>
+            <div>{{ message.content }}</div>
+            <div class="message-time">{{ message.createdAt|date('H:i') }}</div>
+        </div>
+    </template>
+</turbo-stream>

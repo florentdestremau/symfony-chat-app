@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Salles de discussion - Chat App{% endblock %}
+
+{% block body %}
+    <div class="rooms-header">
+        <h2>Salles de discussion</h2>
+        <a href="{{ path('app_room_new') }}" class="btn">+ Créer une salle</a>
+    </div>
+
+    {% if rooms is empty %}
+        <div class="empty-state card">
+            <h3>Aucune salle pour l'instant</h3>
+            <p>Soyez le premier à créer une salle de discussion !</p>
+            <a href="{{ path('app_room_new') }}" class="btn" style="margin-top: 1rem;">
+                Créer une salle
+            </a>
+        </div>
+    {% else %}
+        <div class="rooms-grid">
+            {% for room in rooms %}
+                <div class="room-card">
+                    <h3>{{ room.name }}</h3>
+                    <p>{{ room.messages|length }} message{{ room.messages|length > 1 ? 's' : '' }}</p>
+                    <a href="{{ path('app_room_show', {slug: room.slug}) }}" class="btn">
+                        Rejoindre
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endblock %}

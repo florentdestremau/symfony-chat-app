@@ -1,0 +1,14 @@
+- generic [ref=e1]:
+  - banner [ref=e2]:
+    - heading "💬 Chat App" [level=1] [ref=e3]:
+      - link "💬 Chat App" [ref=e4] [cursor=pointer]:
+        - /url: /
+  - generic [ref=e6]:
+    - heading "Bienvenue sur Chat App" [level=2] [ref=e7]
+    - paragraph [ref=e8]: Choisissez un pseudo pour rejoindre les discussions.
+    - generic [ref=e9]:
+      - generic [ref=e10]:
+        - generic [ref=e11]: Votre pseudo
+        - textbox "Votre pseudo" [active] [ref=e12]:
+          - /placeholder: Entrez votre pseudo
+      - button "Se connecter" [ref=e13] [cursor=pointer]
