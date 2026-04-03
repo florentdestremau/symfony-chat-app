@@ -25,13 +25,12 @@
 	encode zstd br gzip
 
 	mercure {
-		# Publisher JWT key
-		publisher_jwt {env.MERCURE_PUBLISHER_JWT_KEY} {env.MERCURE_PUBLISHER_JWT_ALG}
-		# Subscriber JWT key
-		subscriber_jwt {env.MERCURE_SUBSCRIBER_JWT_KEY} {env.MERCURE_SUBSCRIBER_JWT_ALG}
-		# Allow anonymous subscribers (double-check that it's what you want)
+		# Use single JWT secret for both publisher and subscriber
+		publisher_jwt {env.MERCURE_JWT_SECRET} HS256
+		subscriber_jwt {env.MERCURE_JWT_SECRET} HS256
+		# Allow anonymous subscribers
 		anonymous
-		# Enable the subscription API (double-check that it's what you want)
+		# Enable the subscription API
 		subscriptions
 		# Extra directives
 		{$MERCURE_EXTRA_DIRECTIVES}

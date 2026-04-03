@@ -8,11 +8,7 @@ services:
       - DATABASE_URL=sqlite:////storage/data_prod.db
       - MERCURE_URL=http://localhost/.well-known/mercure
       - MERCURE_PUBLIC_URL=https://symfony-chat-app.once.florent.cc/.well-known/mercure
-      - MERCURE_JWT_SECRET=${MERCURE_PUBLISHER_JWT_KEY:-!ChangeThisMercureHubJWTSecretKey!}
-      - MERCURE_PUBLISHER_JWT_KEY=${MERCURE_PUBLISHER_JWT_KEY:-!ChangeThisMercureHubJWTSecretKey!}
-      - MERCURE_PUBLISHER_JWT_ALG=HS256
-      - MERCURE_SUBSCRIBER_JWT_KEY=${MERCURE_SUBSCRIBER_JWT_KEY:-!ChangeThisMercureHubJWTSecretKey!}
-      - MERCURE_SUBSCRIBER_JWT_ALG=HS256
+      - MERCURE_JWT_SECRET=${MERCURE_JWT_SECRET:-!ChangeThisMercureHubJWTSecretKey!}
       - APP_SECRET=${APP_SECRET:-!ChangeThisAppSecretKey!}
     volumes:
       - sqlite_data:/storage
