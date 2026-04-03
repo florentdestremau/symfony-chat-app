@@ -169,6 +169,10 @@ COPY --chown=www-data:www-data --from=frankenphp_prod_builder /app/var /app/var
 
 COPY --link --chmod=755 frankenphp/docker-entrypoint.sh /usr/local/bin/docker-entrypoint
 
+# Create storage directory for SQLite with correct permissions
+RUN mkdir -p /storage && chown www-data:www-data /storage
+VOLUME /storage
+
 VOLUME /app/var/
 
 USER www-data
