@@ -19,7 +19,8 @@ RUN apk add --no-cache acl && \
         zip
 
 COPY --link frankenphp/Caddyfile /etc/caddy/Caddyfile
-COPY --link frankenphp/conf.d/app.ini $PHP_INI_DIR/conf.d/app.ini
+COPY --link frankenphp/conf.d/10-app.ini $PHP_INI_DIR/conf.d/app.ini
+COPY --link frankenphp/conf.d/20-app.prod.ini $PHP_INI_DIR/conf.d/app.prod.ini
 
 # ─── Build ─────────────────────────────────────────────────────────────────────
 FROM base AS builder
