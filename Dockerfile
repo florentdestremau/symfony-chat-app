@@ -105,7 +105,6 @@ COPY --link --exclude=frankenphp/ . ./
 RUN <<-EOF
 	mkdir -p var/cache var/log var/share
 	composer dump-autoload --classmap-authoritative --no-dev
-	composer dump-env prod
 	composer run-script --no-dev post-install-cmd
 	if [ -f importmap.php ]; then
 		php bin/console asset-map:compile
@@ -136,6 +135,7 @@ FROM debian:13-slim AS frankenphp_prod
 SHELL ["/bin/bash", "-euxo", "pipefail", "-c"]
 
 ENV APP_ENV=prod
+ENV DATABASE_URL="sqlite:////storage/data_prod.db"
 ENV PHP_INI_SCAN_DIR=":/usr/local/etc/php/app.conf.d"
 
 COPY --from=frankenphp_prod_builder /usr/local/bin/frankenphp /usr/local/bin/frankenphp
