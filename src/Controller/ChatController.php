@@ -34,6 +34,12 @@ class ChatController extends AbstractController
         return $this->redirectToRoute('app_rooms');
     }
 
+    #[Route('/up', name: 'app_health_check', methods: ['GET'])]
+    public function up(): Response
+    {
+        return new Response('OK', Response::HTTP_OK);
+    }
+
     #[Route('/login', name: 'app_login', methods: ['GET', 'POST'])]
     public function login(Request $request, SessionInterface $session): Response
     {
