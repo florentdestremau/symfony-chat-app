@@ -1,0 +1,22 @@
+services:
+  php:
+    image: ghcr.io/florentdestremau/symfony-chat-app:master
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    environment:
+      - DATABASE_URL=sqlite:////storage/data_prod.db
+      - MERCURE_PUBLISHER_JWT_KEY=${MERCURE_PUBLISHER_JWT_KEY:-!ChangeThisMercureHubJWTSecretKey!}
+      - MERCURE_SUBSCRIBER_JWT_KEY=${MERCURE_SUBSCRIBER_JWT_KEY:-!ChangeThisMercureHubJWTSecretKey!}
+      - APP_SECRET=${APP_SECRET:-!ChangeThisAppSecretKey!}
+    volumes:
+      - sqlite_data:/storage
+    healthcheck:
+      test: ["CMD", "php", "-r", "exit(false === @file_get_contents('http://localhost:80') ? 1 : 0);"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+volumes:
+  sqlite_data:

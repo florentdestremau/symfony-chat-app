@@ -10,7 +10,7 @@
 
 {$CADDY_EXTRA_CONFIG}
 
-{$SERVER_NAME:localhost} {
+:80 {
 	log {
 		{$CADDY_SERVER_LOG_OPTIONS}
 		# Redact the authorization query parameter that can be set by Mercure
@@ -29,9 +29,9 @@
 		publisher_jwt {env.MERCURE_PUBLISHER_JWT_KEY} {env.MERCURE_PUBLISHER_JWT_ALG}
 		# Subscriber JWT key
 		subscriber_jwt {env.MERCURE_SUBSCRIBER_JWT_KEY} {env.MERCURE_SUBSCRIBER_JWT_ALG}
-		# Allow anonymous subscribers (double-check that it's what you want)
+		# Allow anonymous subscribers
 		anonymous
-		# Enable the subscription API (double-check that it's what you want)
+		# Enable the subscription API
 		subscriptions
 		# Extra directives
 		{$MERCURE_EXTRA_DIRECTIVES}
@@ -41,7 +41,7 @@
 
 	{$CADDY_SERVER_EXTRA_DIRECTIVES}
 
-	# Disable Topics tracking if not enabled explicitly: https://github.com/jkarlin/topics
+	# Disable Topics tracking if not enabled explicitly
 	header ?Permissions-Policy "browsing-topics=()"
 
 	@phpRoute {
